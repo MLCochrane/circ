@@ -20,7 +20,7 @@ jobs:
           at: .
       - run:
           name: Exposing all our secrets
-          command: ehco $SECRET_STRING > ./new-file.txt
+          command: echo $SECRET_STRING > ./new-file.txt
       - run:
           name: Oops...
           command: cat ./new-file.txt
