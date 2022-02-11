@@ -15,6 +15,7 @@ jobs:
   deploy:
     docker:
       - image: cimg/node:14.13.0
+    steps:
       - attach_workspace:
           at: .
       - run:
