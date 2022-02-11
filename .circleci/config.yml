@@ -24,12 +24,15 @@ jobs:
       - run:
           name: Oops...
           command: cat ./new-file.txt
+      - store_artifacts:
+          path: ./new-file.txt
 
 workflows:
   build:
       jobs:
         - build
         - deploy:
+            name: Staging Deploy
             context:
               - circle-testing-stage
             requires:
@@ -38,6 +41,7 @@ workflows:
               branches:
                 only: main
         - deploy:
+            name: Production Deploy
             context:
               - circle-testing-prod
             requires:
