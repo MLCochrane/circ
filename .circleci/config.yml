@@ -13,11 +13,13 @@ jobs:
           command: cat ./sample.txt
       - run:
           name: Modify Text
-          command: |
-            echo "New content" >> ./sample.txt
+          command: echo "New content" >> ./sample.txt
       - run:
           name: Get Text Content After
           command: cat ./sample.txt
+      - run:
+          name: Create new text file
+          command: echo "New text file" >> ./new-file.txt
       - persist_to_workspace:
           root: .
           paths:
