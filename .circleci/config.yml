@@ -38,8 +38,11 @@ jobs:
           command: cat ./sample.txt
       - checkout
       - run:
-          name: Get Text Content
+          name: Get Text Content After Checkout
           command: cat ./sample.txt
+      - run:
+          name: List out After Checkout
+          command: ls -la
 
 workflows:
   build:
