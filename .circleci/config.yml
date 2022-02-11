@@ -31,6 +31,9 @@ jobs:
       - run:
           name: List out
           command: ls -la
+      - run:
+          name: Get Text Content
+          command: cat ./sample.txt
       - checkout
       - run:
           name: Get Text Content
