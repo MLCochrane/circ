@@ -1,0 +1,43 @@
+version: 2.1
+jobs:
+  build:
+    docker:
+      - image: cimg/node:14.13.0
+    steps:
+      - checkout
+      - run:
+          name: List out
+          command: ls -la
+      - run:
+          name: Get Text Content
+          command: cat ./sample.txt
+      - run:
+          name: Modify Text
+          command: |
+            echo "New content" >> ./sample.txt
+      - run:
+          name: Get Text Content After
+          command: cat ./sample.txt
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .
+  deploy:
+    docker:
+      - image: cimg/node:14.13.0
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          name: List out
+          command: ls -la
+      - checkout
+      - run:
+          name: Get Text Content
+          command: cat ./sample.txt
+
+workflows:
+  build:
+      jobs:
+        - build
+        - deploy
