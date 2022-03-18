@@ -5,47 +5,54 @@ jobs:
       - image: cimg/node:14.13.0
     steps:
       - checkout
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package-lock.json" }}
+            - v1-dependencies-
       - run:
-          name: Create new text file
-          command: echo "New text file" >> ./new-file.txt
+          name: Install packages
+          command: npm i
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package-lock.json" }}
       - persist_to_workspace:
           root: .
           paths:
-            - .
-  deploy:
+            - node_modules
+
+  test_one:
     docker:
       - image: cimg/node:14.13.0
     steps:
+      - checkout
       - attach_workspace:
           at: .
       - run:
-          name: Exposing all our secrets
-          command: echo $SECRET_STRING > ./new-file.txt
+          name: Run test suite
+          command: npm run test
+
+  test_two:
+    docker:
+      - image: cimg/node:14.13.0
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package-lock.json" }}
+            - v1-dependencies-
       - run:
-          name: Oops...
-          command: cat ./new-file.txt
-      - store_artifacts:
-          path: ./new-file.txt
+          name: Run test suite
+          command: npm run test
+
 
 workflows:
   build:
       jobs:
         - build
-        - deploy:
-            name: Staging Deploy
-            context:
-              - circle-testing-stage
+        - test_one:
             requires:
               - build
-            filters:
-              branches:
-                only: main
-        - deploy:
-            name: Production Deploy
-            context:
-              - circle-testing-prod
+        - test_two:
             requires:
               - build
-            filters:
-              branches:
-                only: production
