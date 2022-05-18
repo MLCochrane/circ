@@ -19,33 +19,19 @@ jobs:
       - attach_workspace:
           at: .
       - run:
-          name: Exposing all our secrets
-          command: echo $SECRET_STRING > ./new-file.txt
-      - run:
-          name: Oops...
+          name: "Deploy"
           command: cat ./new-file.txt
       - store_artifacts:
           path: ./new-file.txt
 
 workflows:
-  build:
-      jobs:
-        - build
-        - deploy:
-            name: Staging Deploy
-            context:
-              - circle-testing-stage
-            requires:
-              - build
-            filters:
-              branches:
-                only: main
-        - deploy:
-            name: Production Deploy
-            context:
-              - circle-testing-prod
-            requires:
-              - build
-            filters:
-              branches:
-                only: production
+  release-branch-workflow:
+    jobs:
+      - build
+      - request-testing:
+          type: approval
+          requires:
+            - build
+      - deploy:
+          requires:
+            - request-testing
