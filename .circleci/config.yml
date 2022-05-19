@@ -8,6 +8,9 @@ jobs:
       - run:
           name: Create new text file
           command: echo "New text file" >> ./new-file.txt
+      - run:
+          name: Testing for jq
+          command: jq --help
       - persist_to_workspace:
           root: .
           paths:
